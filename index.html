@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCSE Combined Chemistry Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .quiz-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .quiz-content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            border-left: 4px solid #4facfe;
+            padding-left: 20px;
+        }
+        
+        .section-title {
+            color: #4facfe;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #17a2b8;
+            transition: transform 0.2s ease;
+        }
+        
+        .question:hover {
+            transform: translateX(5px);
+        }
+        
+        .question-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .mcq-options {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .mcq-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mcq-option:hover {
+            border-color: #4facfe;
+            background: #f0f8ff;
+        }
+        
+        .mcq-option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        .table-input {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .table-input th, .table-input td {
+            border: 2px solid #e9ecef;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .table-input th {
+            background: #4facfe;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .table-input input {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+        }
+        
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+        }
+        
+        .submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .results {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .grade {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .grade.grade-6 { background: #28a745; color: white; }
+        .grade.grade-5 { background: #17a2b8; color: white; }
+        .grade.grade-4 { background: #ffc107; color: #333; }
+        .grade.grade-3 { background: #fd7e14; color: white; }
+        .grade.grade-below { background: #dc3545; color: white; }
+        
+        .feedback {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .model-answer {
+            background: #f8f9fa;
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .model-answer h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .model-answer .answer-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+        
+        .model-answer .marks {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .section-answers {
+            margin-bottom: 40px;
+            border-left: 4px solid #4facfe;
+            padding-left: 20px;
+        }
+        
+        .section-answers h3 {
+            color: #4facfe;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .timer {
+                position: relative;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GCSE Combined Chemistry Quiz</h1>
+            <div class="quiz-info">
+                <div class="info-item">📚 Target Grade: 4-5</div>
+                <div class="info-item">📝 Total Marks: 72</div>
+                <div class="info-item">⏱️ Time: 60 minutes</div>
+            </div>
+        </div>
+        
+        <div class="timer" id="timer">60:00</div>
+        
+        <div class="quiz-content" id="quizContent">
+            <!-- Section A: Atomic Structure and the Periodic Table -->
+            <div class="section">
+                <h2 class="section-title">Section A: Atomic Structure and the Periodic Table (20 marks)</h2>
+                
+                <div class="question">
+                    <div class="question-header">Question 1 (Multiple Choice) [4 marks]</div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>a)</strong> An atom has 11 protons, 12 neutrons and 11 electrons. What is its mass number?
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q1a" value="A"> A) 11
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1a" value="B"> B) 12
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1a" value="C"> C) 22
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1a" value="D"> D) 23
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>b)</strong> Which of these elements is in Group 7 of the periodic table?
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q1b" value="A"> A) Sodium
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1b" value="B"> B) Chlorine
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1b" value="C"> C) Argon
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1b" value="D"> D) Magnesium
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>c)</strong> What is the maximum number of electrons that can fit in the first electron shell?
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q1c" value="A"> A) 1
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1c" value="B"> B) 2
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1c" value="C"> C) 8
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1c" value="D"> D) 18
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <strong>d)</strong> Elements in the same group have the same number of:
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q1d" value="A"> A) Protons
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1d" value="B"> B) Neutrons
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1d" value="C"> C) Electrons in the outer shell
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q1d" value="D"> D) Electron shells
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 2 [3 marks] - Complete the table for fluorine (atomic number 9, mass number 19):</div>
+                    <table class="table-input">
+                        <tr>
+                            <th>Particle</th>
+                            <th>Number</th>
+                        </tr>
+                        <tr>
+                            <td>Protons</td>
+                            <td><input type="text" name="q2_protons" placeholder="Enter number"></td>
+                        </tr>
+                        <tr>
+                            <td>Neutrons</td>
+                            <td><input type="text" name="q2_neutrons" placeholder="Enter number"></td>
+                        </tr>
+                        <tr>
+                            <td>Electrons</td>
+                            <td><input type="text" name="q2_electrons" placeholder="Enter number"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 3 [4 marks]</div>
+                    <strong>a)</strong> Define the term "isotope" [2 marks]:
+                    <textarea class="text-input" name="q3a" rows="3" placeholder="Enter your definition here..."></textarea>
+                    
+                    <strong>b)</strong> Carbon-12 and Carbon-14 are isotopes of carbon. Explain why they have different mass numbers but the same atomic number [2 marks]:
+                    <textarea class="text-input" name="q3b" rows="3" placeholder="Enter your explanation here..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 4 [5 marks]</div>
+                    <strong>a)</strong> Draw the electronic structure of magnesium (atomic number 12) using electrons-in-shells [2 marks]:
+                    <input type="text" class="text-input" name="q4a" placeholder="e.g., 2,8,2">
+                    
+                    <strong>b)</strong> Explain why magnesium is in Group 2 [1 mark]:
+                    <textarea class="text-input" name="q4b" rows="2" placeholder="Enter your explanation here..."></textarea>
+                    
+                    <strong>c)</strong> Predict two properties of magnesium based on its position [2 marks]:
+                    <textarea class="text-input" name="q4c" rows="3" placeholder="List two properties..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 5 [4 marks] - Explain why noble gases (Group 0) are unreactive:</div>
+                    <textarea class="text-input" name="q5" rows="4" placeholder="Include reference to their electronic structure..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section B: Chemical Analysis -->
+            <div class="section">
+                <h2 class="section-title">Section B: Chemical Analysis (18 marks)</h2>
+                
+                <div class="question">
+                    <div class="question-header">Question 6 (Multiple Choice) [2 marks]</div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>a)</strong> Which flame test color indicates the presence of sodium ions?
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q6a" value="A"> A) Green
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q6a" value="B"> B) Orange/yellow
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q6a" value="C"> C) Red
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q6a" value="D"> D) Blue
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <strong>b)</strong> A white precipitate forms when silver nitrate is added to a solution. This indicates:
+                        <div class="mcq-options">
+                            <label class="mcq-option">
+                                <input type="radio" name="q6b" value="A"> A) Sulfate ions
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q6b" value="B"> B) Carbonate ions
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q6b" value="C"> C) Chloride ions
+                            </label>
+                            <label class="mcq-option">
+                                <input type="radio" name="q6b" value="D"> D) Hydroxide ions
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 7 [8 marks] - Complete the gas testing table:</div>
+                    <table class="table-input">
+                        <tr>
+                            <th>Gas</th>
+                            <th>Test</th>
+                            <th>Positive Result</th>
+                        </tr>
+                        <tr>
+                            <td>Chlorine</td>
+                            <td><input type="text" name="q7_cl_test" placeholder="Test method"></td>
+                            <td><input type="text" name="q7_cl_result" placeholder="Positive result"></td>
+                        </tr>
+                        <tr>
+                            <td>Oxygen</td>
+                            <td><input type="text" name="q7_o2_test" placeholder="Test method"></td>
+                            <td><input type="text" name="q7_o2_result" placeholder="Positive result"></td>
+                        </tr>
+                        <tr>
+                            <td>Carbon dioxide</td>
+                            <td><input type="text" name="q7_co2_test" placeholder="Test method"></td>
+                            <td><input type="text" name="q7_co2_result" placeholder="Positive result"></td>
+                        </tr>
+                        <tr>
+                            <td>Hydrogen</td>
+                            <td><input type="text" name="q7_h2_test" placeholder="Test method"></td>
+                            <td><input type="text" name="q7_h2_result" placeholder="Positive result"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 8 [4 marks] - Purity and Testing</div>
+                    <strong>a)</strong> Define "purity" in chemistry [2 marks]:
+                    <textarea class="text-input" name="q8a" rows="2" placeholder="Enter definition of purity..."></textarea>
+                    
+                    <strong>b)</strong> What is the test for purity of a substance? [2 marks]:
+                    <textarea class="text-input" name="q8b" rows="2" placeholder="Describe the test for purity..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 9 [6 marks] - Separation Techniques</div>
+                    <strong>a)</strong> Name the separation technique used to separate sand from salt water [1 mark]:
+                    <input type="text" class="text-input" name="q9a" placeholder="Technique name...">
+                    
+                    <strong>b)</strong> Name the separation technique used to separate salt from salt water [1 mark]:
+                    <input type="text" class="text-input" name="q9b" placeholder="Technique name...">
+                    
+                    <strong>c)</strong> Name the separation technique used to separate different colored dyes [1 mark]:
+                    <input type="text" class="text-input" name="q9c" placeholder="Technique name...">
+                    
+                    <strong>d)</strong> Explain how you would separate a mixture of iron filings and sulfur powder [3 marks]:
+                    <textarea class="text-input" name="q9d" rows="3" placeholder="Describe the method and explain why it works..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 10 [3 marks]</div>
+                    <strong>a)</strong> Define "chromatography" [2 marks]:
+                    <textarea class="text-input" name="q10a" rows="2" placeholder="Enter definition..."></textarea>
+                    
+                    <strong>b)</strong> Calculate Rf value: substance travels 6 cm, solvent front 8 cm. Show your working [1 mark]:
+                    <textarea class="text-input" name="q10b" rows="2" placeholder="Show working and answer..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section C: Quantitative Chemistry -->
+            <div class="section">
+                <h2 class="section-title">Section C: Quantitative Chemistry (15 marks)</h2>
+                
+                <div class="question">
+                    <div class="question-header">Question 11 [3 marks] - Calculate relative formula mass (Mr):</div>
+                    <p><em>Relative atomic masses: H = 1, O = 16, Ca = 40, Cl = 35.5, Mg = 24</em></p>
+                    
+                    <strong>a)</strong> H₂O [1 mark]:
+                    <input type="text" class="text-input" name="q11a" placeholder="Enter Mr value">
+                    
+                    <strong>b)</strong> CaCl₂ [1 mark]:
+                    <input type="text" class="text-input" name="q11b" placeholder="Enter Mr value">
+                    
+                    <strong>c)</strong> Mg(OH)₂ [1 mark]:
+                    <input type="text" class="text-input" name="q11c" placeholder="Enter Mr value">
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 12 [4 marks]</div>
+                    <strong>a)</strong> State the law of conservation of mass [2 marks]:
+                    <textarea class="text-input" name="q12a" rows="2" placeholder="State the law..."></textarea>
+                    
+                    <strong>b)</strong> 2.4g magnesium burns to produce 4.0g magnesium oxide. What mass of oxygen reacted? [2 marks]:
+                    <textarea class="text-input" name="q12b" rows="3" placeholder="Show working..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 13 [4 marks] - Calculate percentage by mass of carbon in CaCO₃:</div>
+                    <p><em>Relative atomic masses: Ca = 40, C = 12, O = 16</em></p>
+                    <textarea class="text-input" name="q13" rows="4" placeholder="Show all working clearly..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 14 [4 marks]</div>
+                    <strong>a)</strong> Define "relative atomic mass (Ar)" [2 marks]:
+                    <textarea class="text-input" name="q14a" rows="2" placeholder="Enter definition..."></textarea>
+                    
+                    <strong>b)</strong> H₂SO₄ has Mr = 98. Calculate percentage by mass of sulfur [2 marks]:
+                    <p><em>Relative atomic masses: H = 1, S = 32, O = 16</em></p>
+                    <textarea class="text-input" name="q14b" rows="3" placeholder="Show working..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section D: Using Resources -->
+            <div class="section">
+                <h2 class="section-title">Section D: Using Resources (10 marks)</h2>
+                
+                <div class="question">
+                    <div class="question-header">Question 15 (Multiple Choice) [1 mark]</div>
+                    What is the main advantage of recycling metals?
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="q15" value="A"> A) It produces purer metals
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q15" value="B"> B) It conserves natural resources
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q15" value="C"> C) It's always cheaper
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q15" value="D"> D) It's faster than extraction
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 16 [4 marks]</div>
+                    <strong>a)</strong> Define "sustainable development" [2 marks]:
+                    <textarea class="text-input" name="q16a" rows="2" placeholder="Enter definition..."></textarea>
+                    
+                    <strong>b)</strong> Give two reasons why recycling aluminum is important for sustainable development [2 marks]:
+                    <textarea class="text-input" name="q16b" rows="3" placeholder="List two reasons..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 17 [5 marks]</div>
+                    <strong>a)</strong> Name two natural resources used to make plastic [2 marks]:
+                    <textarea class="text-input" name="q17a" rows="2" placeholder="Name two resources..."></textarea>
+                    
+                    <strong>b)</strong> State one environmental problem caused by plastic waste [1 mark]:
+                    <textarea class="text-input" name="q17b" rows="2" placeholder="Environmental problem..."></textarea>
+                    
+                    <strong>c)</strong> Suggest two ways to reduce plastic waste [2 marks]:
+                    <textarea class="text-input" name="q17c" rows="3" placeholder="Two ways to reduce waste..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section E: Atmosphere -->
+            <div class="section">
+                <h2 class="section-title">Section E: Atmosphere (12 marks)</h2>
+                
+                <div class="question">
+                    <div class="question-header">Question 18 (Multiple Choice) [1 mark]</div>
+                    What percentage of the atmosphere is nitrogen?
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="q18" value="A"> A) 21%
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q18" value="B"> B) 78%
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q18" value="C"> C) 0.04%
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="q18" value="D"> D) 1%
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 19 [2 marks]</div>
+                    <strong>a)</strong> Name two greenhouse gases [2 marks]:
+                    <textarea class="text-input" name="q19a" rows="2" placeholder="Name two gases..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 20 [2 marks]</div>
+                    What is the difference between a metal ion and a non-metal ion? [2 marks]:
+                    <textarea class="text-input" name="q20" rows="3" placeholder="Explain the difference..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-header">Question 21 [8 marks] - Key Definitions</div>
+                    <strong>a)</strong> Define an atom [2 marks]:
+                    <textarea class="text-input" name="q21a" rows="2" placeholder="Define atom..."></textarea>
+                    
+                    <strong>b)</strong> Define an element [2 marks]:
+                    <textarea class="text-input" name="q21b" rows="2" placeholder="Define element..."></textarea>
+                    
+                    <strong>c)</strong> Define a compound [2 marks]:
+                    <textarea class="text-input" name="q21c" rows="2" placeholder="Define compound..."></textarea>
+                    
+                    <strong>d)</strong> Define a mixture [2 marks]:
+                    <textarea class="text-input" name="q21d" rows="2" placeholder="Define mixture..."></textarea>
+                </div>
+            </div>
+            
+            <div class="submit-container">
+                <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+                <p style="color: white; margin-top: 15px;">Make sure you've answered all questions before submitting!</p>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <h2 style="text-align: center; color: #4facfe; margin-bottom: 30px;">Quiz Results</h2>
+            <div class="grade" id="gradeDisplay"></div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3>Score: <span id="scoreDisplay"></span>/72 marks</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p><strong>Percentage: <span id="percentageDisplay"></span>%</strong></p>
+            </div>
+            <div class="feedback" id="feedbackDisplay"></div>
+        </div>
+        
+        <div class="results" id="modelAnswers" style="display: none;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button onclick="hideModelAnswers()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-bottom: 20px;">
+                    ← Back to Results
+                </button>
+            </div>
+            <h2 style="text-align: center; color: #4facfe; margin-bottom: 30px;">📋 Model Answers</h2>
+            <div id="modelAnswersContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Timer functionality
+        let timeLeft = 3600; // 60 minutes in seconds
+        let timerInterval;
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                    alert("Time's up! Quiz submitted automatically.");
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+            // Change color when time is running low
+            if (timeLeft <= 300) { // 5 minutes
+                document.getElementById('timer').style.background = '#ff4757';
+            } else if (timeLeft <= 600) { // 10 minutes
+                document.getElementById('timer').style.background = '#ffa502';
+            }
+        }
+        
+        // Answer key with mark scheme language
+        const answers = {
+            // Section A
+            q1a: 'D', q1b: 'B', q1c: 'B', q1d: 'C',
+            q2_protons: '9', q2_neutrons: '10', q2_electrons: '9',
+            // Section B
+            q6a: 'B', q6b: 'C',
+            q7_cl_test: ['damp litmus paper', 'litmus paper', 'damp blue litmus paper', 'damp indicator paper'],
+            q7_cl_result: ['bleaches', 'turns white', 'bleached white', 'decolourises', 'decolorises'],
+            q7_o2_test: ['glowing splint', 'glowing wooden splint', 'glowing stick'],
+            q7_o2_result: ['relights', 'splint relights', 'rekindled', 'reignites'],
+            q7_co2_test: ['limewater', 'lime water', 'calcium hydroxide solution'],
+            q7_co2_result: ['turns milky', 'goes milky', 'milky', 'cloudy', 'turns cloudy'],
+            q7_h2_test: ['lighted splint', 'burning splint', 'lit splint', 'flame'],
+            q7_h2_result: ['squeaky pop', 'pop', 'squeaks', 'burns with squeaky pop'],
+            // Section C
+            q11a: '18', q11b: '111', q11c: '58',
+            q12b: '1.6',
+            q13: '12', // percentage of carbon in CaCO3
+            q14b: '32.7', // percentage of sulfur in H2SO4
+            // Section D
+            q15: 'B',
+            // Section E
+            q18: 'B'
+        };
+        
+        // Mark scheme criteria for text answers
+        const markSchemeCriteria = {
+            q3a: {
+                fullMarks: ['atoms with the same number of protons', 'same atomic number', 'different number of neutrons', 'different mass numbers'],
+                partialMarks: ['same element', 'different masses', 'same protons']
+            },
+            q3b: {
+                fullMarks: ['same number of protons', 'same atomic number', 'different number of neutrons', 'different mass numbers'],
+                partialMarks: ['protons same', 'neutrons different', 'atomic number same']
+            },
+            q4b: {
+                fullMarks: ['2 electrons in outer shell', '2 outer electrons', 'outer shell has 2 electrons'],
+                partialMarks: ['2 electrons', 'outer shell']
+            },
+            q4c: {
+                fullMarks: ['forms 2+ ions', 'loses 2 electrons', 'metallic bonding', 'conducts electricity', 'malleable', 'ductile'],
+                partialMarks: ['metal', 'conductor', 'shiny']
+            },
+            q5: {
+                fullMarks: ['full outer shell', 'complete outer shell', 'stable electron arrangement', '8 electrons in outer shell'],
+                partialMarks: ['stable', 'complete', 'full shell']
+            },
+            q8a: {
+                fullMarks: ['contains only one substance', 'single substance', 'no other substances present'],
+                partialMarks: ['one substance', 'not mixed', 'pure']
+            },
+            q8b: {
+                fullMarks: ['measure melting point', 'measure boiling point', 'sharp melting point', 'fixed boiling point'],
+                partialMarks: ['melting point', 'boiling point', 'temperature']
+            },
+            q9d: {
+                fullMarks: ['use a magnet', 'iron is magnetic', 'sulfur is not magnetic', 'separate magnetic material'],
+                partialMarks: ['magnet', 'magnetic', 'iron magnetic']
+            },
+            q10a: {
+                fullMarks: ['separation technique', 'mobile phase moves', 'stationary phase', 'different solubilities'],
+                partialMarks: ['separation', 'solvent moves', 'technique']
+            },
+            q12a: {
+                fullMarks: ['mass cannot be created or destroyed', 'total mass of reactants equals total mass of products', 'mass is conserved'],
+                partialMarks: ['mass conserved', 'mass same', 'no mass lost']
+            },
+            q14a: {
+                fullMarks: ['average mass of atoms', 'compared to 1/12 mass of carbon-12', 'taking into account isotopes'],
+                partialMarks: ['average mass', 'compared to carbon-12', 'isotopes']
+            },
+            q16a: {
+                fullMarks: ['meets needs of present generation', 'without compromising future generations', 'environmental protection'],
+                partialMarks: ['future generations', 'environment', 'long term']
+            },
+            q16b: {
+                fullMarks: ['conserves finite resources', 'reduces energy consumption', 'reduces pollution', 'reduces landfill'],
+                partialMarks: ['saves resources', 'less energy', 'environment']
+            },
+            q17a: {
+                fullMarks: ['crude oil', 'natural gas', 'petroleum', 'fossil fuels'],
+                partialMarks: ['oil', 'gas', 'coal']
+            },
+            q17b: {
+                fullMarks: ['pollution of oceans', 'harm to wildlife', 'non-biodegradable', 'landfill problems'],
+                partialMarks: ['pollution', 'environment', 'wildlife']
+            },
+            q17c: {
+                fullMarks: ['reduce use', 'reuse items', 'recycle plastics', 'biodegradable alternatives'],
+                partialMarks: ['recycle', 'reuse', 'alternatives']
+            },
+            q19a: {
+                fullMarks: ['carbon dioxide', 'methane', 'water vapour', 'nitrous oxide'],
+                partialMarks: ['CO2', 'CH4', 'steam']
+            },
+            q20: {
+                fullMarks: ['metal ions are positive', 'non-metal ions are negative', 'metals lose electrons', 'non-metals gain electrons'],
+                partialMarks: ['positive', 'negative', 'electrons']
+            },
+            q21a: {
+                fullMarks: ['smallest particle of an element', 'building block of matter', 'cannot be divided chemically'],
+                partialMarks: ['smallest particle', 'basic unit', 'element']
+            },
+            q21b: {
+                fullMarks: ['substance made of one type of atom only', 'atoms with same atomic number', 'cannot be broken down'],
+                partialMarks: ['one type of atom', 'same atoms', 'pure substance']
+            },
+            q21c: {
+                fullMarks: ['two or more elements chemically bonded', 'fixed ratio of elements', 'chemical bonds between atoms'],
+                partialMarks: ['elements joined', 'chemically bonded', 'fixed composition']
+            },
+            q21d: {
+                fullMarks: ['two or more substances not chemically bonded', 'can be separated physically', 'components retain properties'],
+                partialMarks: ['not bonded', 'mixed together', 'can separate']
+            }
+        };
+        
+        function checkTextAnswer(questionName, userAnswer, marks) {
+            const criteria = markSchemeCriteria[questionName];
+            if (!criteria || !userAnswer) return 0;
+            
+            const answer = userAnswer.toLowerCase().trim();
+            let score = 0;
+            
+            // Check for full marks criteria
+            const fullMatches = criteria.fullMarks.filter(phrase => 
+                answer.includes(phrase.toLowerCase())
+            ).length;
+            
+            // Check for partial marks criteria
+            const partialMatches = criteria.partialMarks.filter(phrase => 
+                answer.includes(phrase.toLowerCase())
+            ).length;
+            
+            if (fullMatches >= 2) {
+                score = marks; // Full marks if 2+ key phrases matched
+            } else if (fullMatches >= 1) {
+                score = Math.max(marks - 1, Math.ceil(marks * 0.6)); // Nearly full marks
+            } else if (partialMatches >= 2) {
+                score = Math.ceil(marks * 0.5); // Half marks
+            } else if (partialMatches >= 1) {
+                score = 1; // Minimum mark for some understanding
+            }
+            
+            return Math.min(score, marks);
+        }
+        
+        function checkAnswer(questionName, userAnswer) {
+            const correctAnswer = answers[questionName];
+            
+            if (!correctAnswer) return 0;
+            
+            if (Array.isArray(correctAnswer)) {
+                return correctAnswer.some(answer => 
+                    userAnswer.toLowerCase().includes(answer.toLowerCase())
+                ) ? 1 : 0;
+            }
+            
+            if (typeof correctAnswer === 'string') {
+                return userAnswer.toLowerCase().trim() === correctAnswer.toLowerCase() ? 1 : 0;
+            }
+            
+            return 0;
+        }
+        
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            let totalScore = 0;
+            const formData = new FormData();
+            
+            // Get all form inputs
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (input.name) {
+                    formData.append(input.name, input.value);
+                }
+            });
+            
+            // Calculate scores for each section
+            let sectionScores = {
+                A: 0, B: 0, C: 0, D: 0, E: 0
+            };
+            
+            // Section A scoring using mark scheme criteria (20 marks)
+            sectionScores.A += checkAnswer('q1a', formData.get('q1a')) * 1;
+            sectionScores.A += checkAnswer('q1b', formData.get('q1b')) * 1;
+            sectionScores.A += checkAnswer('q1c', formData.get('q1c')) * 1;
+            sectionScores.A += checkAnswer('q1d', formData.get('q1d')) * 1;
+            sectionScores.A += checkAnswer('q2_protons', formData.get('q2_protons')) * 1;
+            sectionScores.A += checkAnswer('q2_neutrons', formData.get('q2_neutrons')) * 1;
+            sectionScores.A += checkAnswer('q2_electrons', formData.get('q2_electrons')) * 1;
+            
+            // Use mark scheme criteria for text answers
+            sectionScores.A += checkTextAnswer('q3a', formData.get('q3a'), 2);
+            sectionScores.A += checkTextAnswer('q3b', formData.get('q3b'), 2);
+            
+            // Q4a - electronic structure
+            const q4a = formData.get('q4a') || '';
+            if (q4a.includes('2,8,2') || q4a.includes('2.8.2')) {
+                sectionScores.A += 2;
+            }
+            
+            sectionScores.A += checkTextAnswer('q4b', formData.get('q4b'), 1);
+            sectionScores.A += checkTextAnswer('q4c', formData.get('q4c'), 2);
+            sectionScores.A += checkTextAnswer('q5', formData.get('q5'), 4);
+            
+            // Section B scoring using mark scheme criteria (18 marks)
+            sectionScores.B += checkAnswer('q6a', formData.get('q6a')) * 1;
+            sectionScores.B += checkAnswer('q6b', formData.get('q6b')) * 1;
+            sectionScores.B += checkAnswer('q7_cl_test', formData.get('q7_cl_test')) * 1;
+            sectionScores.B += checkAnswer('q7_cl_result', formData.get('q7_cl_result')) * 1;
+            sectionScores.B += checkAnswer('q7_o2_test', formData.get('q7_o2_test')) * 1;
+            sectionScores.B += checkAnswer('q7_o2_result', formData.get('q7_o2_result')) * 1;
+            sectionScores.B += checkAnswer('q7_co2_test', formData.get('q7_co2_test')) * 1;
+            sectionScores.B += checkAnswer('q7_co2_result', formData.get('q7_co2_result')) * 1;
+            sectionScores.B += checkAnswer('q7_h2_test', formData.get('q7_h2_test')) * 1;
+            sectionScores.B += checkAnswer('q7_h2_result', formData.get('q7_h2_result')) * 1;
+            
+            // Use mark scheme criteria for purity and separation questions
+            sectionScores.B += checkTextAnswer('q8a', formData.get('q8a'), 2);
+            sectionScores.B += checkTextAnswer('q8b', formData.get('q8b'), 2);
+            
+            // Separation techniques - exact answers required
+            const q9a = formData.get('q9a') || '';
+            if (q9a.toLowerCase().includes('filtration')) {
+                sectionScores.B += 1;
+            }
+            
+            const q9b = formData.get('q9b') || '';
+            if (q9b.toLowerCase().includes('evaporation') || q9b.toLowerCase().includes('crystallisation')) {
+                sectionScores.B += 1;
+            }
+            
+            const q9c = formData.get('q9c') || '';
+            if (q9c.toLowerCase().includes('chromatography')) {
+                sectionScores.B += 1;
+            }
+            
+            sectionScores.B += checkTextAnswer('q9d', formData.get('q9d'), 3);
+            sectionScores.B += checkTextAnswer('q10a', formData.get('q10a'), 2);
+            
+            // Rf calculation
+            const q10b = formData.get('q10b') || '';
+            if (q10b.includes('0.75') || q10b.includes('6/8')) {
+                sectionScores.B += 1;
+            }
+            
+            // Section C scoring using mark scheme criteria (15 marks)
+            sectionScores.C += checkAnswer('q11a', formData.get('q11a')) * 1;
+            sectionScores.C += checkAnswer('q11b', formData.get('q11b')) * 1;
+            sectionScores.C += checkAnswer('q11c', formData.get('q11c')) * 1;
+            
+            sectionScores.C += checkTextAnswer('q12a', formData.get('q12a'), 2);
+            sectionScores.C += checkAnswer('q12b', formData.get('q12b')) * 2;
+            sectionScores.C += checkAnswer('q13', formData.get('q13')) * 4;
+            sectionScores.C += checkTextAnswer('q14a', formData.get('q14a'), 2);
+            sectionScores.C += checkAnswer('q14b', formData.get('q14b')) * 2;
+            
+            // Section D scoring using mark scheme criteria (10 marks)
+            sectionScores.D += checkAnswer('q15', formData.get('q15')) * 1;
+            sectionScores.D += checkTextAnswer('q16a', formData.get('q16a'), 2);
+            sectionScores.D += checkTextAnswer('q16b', formData.get('q16b'), 2);
+            sectionScores.D += checkTextAnswer('q17a', formData.get('q17a'), 2);
+            sectionScores.D += checkTextAnswer('q17b', formData.get('q17b'), 1);
+            sectionScores.D += checkTextAnswer('q17c', formData.get('q17c'), 2);
+            
+            // Section E scoring using mark scheme criteria (12 marks)
+            sectionScores.E += checkAnswer('q18', formData.get('q18')) * 1;
+            sectionScores.E += checkTextAnswer('q19a', formData.get('q19a'), 2);
+            sectionScores.E += checkTextAnswer('q20', formData.get('q20'), 2);
+            sectionScores.E += checkTextAnswer('q21a', formData.get('q21a'), 2);
+            sectionScores.E += checkTextAnswer('q21b', formData.get('q21b'), 2);
+            sectionScores.E += checkTextAnswer('q21c', formData.get('q21c'), 2);
+            sectionScores.E += checkTextAnswer('q21d', formData.get('q21d'), 2);
+            
+            totalScore = Object.values(sectionScores).reduce((a, b) => a + b, 0);
+            
+            // Display results
+            displayResults(totalScore, sectionScores);
+        }
+        
+        function displayResults(totalScore, sectionScores) {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const percentage = Math.round((totalScore / 72) * 100);
+            let grade, gradeClass, feedback;
+            
+            if (percentage >= 80) {
+                grade = "Grade 6+";
+                gradeClass = "grade-6";
+                feedback = "🌟 Outstanding work! You should feel incredibly proud of yourself - this is exceptional chemistry knowledge! You've clearly put in fantastic effort and it really shows. You're absolutely ready for higher-level chemistry and should feel confident about your abilities. Keep up this brilliant work!";
+            } else if (percentage >= 65) {
+                grade = "Grade 6";
+                gradeClass = "grade-6";
+                feedback = "🎉 Excellent achievement! You've done brilliantly and should feel really confident about your chemistry skills. This is a fantastic result that shows you understand the concepts well. You're doing great - believe in yourself!";
+            } else if (percentage >= 51) {
+                grade = "Grade 5";
+                gradeClass = "grade-5";
+                feedback = "✨ Well done - you've hit your target grade! This is a really good result and you should feel proud of your progress. You clearly understand the key chemistry concepts. With a bit more practice on the areas you found tricky, you'll continue to improve. Great effort!";
+            } else if (percentage >= 40) {
+                grade = "Grade 4";
+                gradeClass = "grade-4";
+                feedback = "👏 Good work! You've achieved Grade 4 which shows you have a solid foundation in chemistry. Don't worry about the questions you found challenging - that's completely normal and part of learning! Focus on building your confidence with the topics you know well, and gradually work on the trickier areas. You're making good progress!";
+            } else if (percentage >= 30) {
+                grade = "Grade 3";
+                gradeClass = "grade-3";
+                feedback = "💪 You're doing well and making real progress! Every question you got right shows you're learning and understanding chemistry concepts. Don't be discouraged - chemistry can be challenging for everyone at first. The important thing is that you're trying and improving. Focus on the basics, ask for help when you need it, and celebrate the progress you're making!";
+            } else {
+                grade = "Working Towards Grade 3";
+                gradeClass = "grade-below";
+                feedback = "🌱 Remember, everyone starts somewhere and you're on your learning journey! The fact that you completed this quiz shows determination and that's something to be proud of. Chemistry concepts take time to understand, and that's perfectly okay. Start with the fundamentals, don't hesitate to ask your teacher for support, and remember that every small step forward is progress. You can do this!";
+            }
+            
+            document.getElementById('gradeDisplay').textContent = grade;
+            document.getElementById('gradeDisplay').className = `grade ${gradeClass}`;
+            document.getElementById('scoreDisplay').textContent = Math.round(totalScore);
+            document.getElementById('percentageDisplay').textContent = percentage;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            
+            // Detailed feedback with encouragement
+            let detailedFeedback = `<h4>🎯 Your Achievement:</h4><p>${feedback}</p><br>`;
+            
+            // Add specific strengths and encouragement
+            let strengths = [];
+            let improvements = [];
+            
+            if (sectionScores.A >= 15) strengths.push("You've got a solid grasp of atomic structure and the periodic table! 🔬");
+            else if (sectionScores.A >= 10) improvements.push("Practice atomic structure concepts - you're getting there! Try creating a mindmap showing how protons, neutrons and electrons relate to each other, and make a summary sheet of electron arrangements for different elements.");
+            else improvements.push("Start with the basics of atoms and elements. Create a visual summary sheet showing the structure of atoms, and use diagrams to understand electron arrangements in shells.");
+            
+            if (sectionScores.B >= 13) strengths.push("Great work on chemical analysis - you know your tests and techniques! 🧪");
+            else if (sectionScores.B >= 9) improvements.push("You're making progress with analysis! Make flashcards for the gas tests and ion tests, but create a mindmap or summary sheet for separation techniques to see how they all connect together.");
+            else improvements.push("Focus on chemical analysis step by step. Make flashcards for gas tests and ion tests to memorize them, and create a summary sheet showing different separation techniques and when to use each one.");
+            
+            if (sectionScores.C >= 11) strengths.push("Excellent calculation skills - you're comfortable with chemical math! 📊");
+            else if (sectionScores.C >= 8) improvements.push("Keep practicing calculations - you're building good foundations! Create a summary sheet with the key formulas and work through examples step by step.");
+            else improvements.push("Take calculations step by step. Make a summary sheet with all the key formulas (like Ar, Mr, percentage mass) and practice with simpler numbers first to build confidence.");
+            
+            if (sectionScores.D >= 7) strengths.push("You understand sustainability and resources really well! 🌍");
+            else if (sectionScores.D >= 5) improvements.push("Good understanding of environmental chemistry - keep building on this! Try creating a mindmap linking sustainability, recycling, and resource use together.");
+            else improvements.push("Think about how chemistry affects our everyday life. Create a summary sheet or mindmap showing how sustainability connects to chemistry and our environment.");
+            
+            if (sectionScores.E >= 8) strengths.push("Strong knowledge of atmospheric chemistry and key definitions! 🌤️");
+            else if (sectionScores.E >= 6) improvements.push("You're getting the hang of definitions - practice makes perfect! Make flashcards for key definitions, and create a summary sheet showing how atoms, elements, compounds and mixtures are different.");
+            else improvements.push("Focus on the key definitions first. Make flashcards for atoms, elements, compounds and mixtures, then create a summary sheet or mindmap showing how they all relate to each other.");
+            
+            detailedFeedback += `<h4>🌟 What You Did Well:</h4>`;
+            if (strengths.length > 0) {
+                strengths.forEach(strength => {
+                    detailedFeedback += `<p>• ${strength}</p>`;
+                });
+            } else {
+                detailedFeedback += `<p>• You showed up and tried your best - that's the most important step! 💪</p>`;
+                detailedFeedback += `<p>• You completed the entire quiz - that shows real determination! 🎯</p>`;
+            }
+            
+            if (improvements.length > 0) {
+                detailedFeedback += `<br><h4>🚀 Areas to Focus On (You've Got This!):</h4>`;
+                improvements.forEach(improvement => {
+                    detailedFeedback += `<p>• ${improvement}</p>`;
+                });
+            }
+            
+            detailedFeedback += `<br><h4>📈 Your Score Breakdown:</h4>`;
+            detailedFeedback += `<p><strong>Section A (Atomic Structure):</strong> ${Math.round(sectionScores.A)}/20 marks</p>`;
+            detailedFeedback += `<p><strong>Section B (Chemical Analysis):</strong> ${Math.round(sectionScores.B)}/18 marks</p>`;
+            detailedFeedback += `<p><strong>Section C (Quantitative Chemistry):</strong> ${Math.round(sectionScores.C)}/15 marks</p>`;
+            detailedFeedback += `<p><strong>Section D (Using Resources):</strong> ${Math.round(sectionScores.D)}/10 marks</p>`;
+            detailedFeedback += `<p><strong>Section E (Atmosphere):</strong> ${Math.round(sectionScores.E)}/12 marks</p>`;
+            
+            detailedFeedback += `<br><div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4>💡 Remember: Every Expert Was Once a Beginner!</h4>
+                <p>Chemistry takes time to master, and every question you answer helps you learn. Be patient with yourself, celebrate your progress, and don't hesitate to ask for help. You're capable of great things! 🌟</p>
+            </div>`;
+            
+            detailedFeedback += `<br><div style="text-align: center; margin: 20px 0;">
+                <button onclick="showModelAnswers()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; font-size: 1.1rem; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
+                    📋 View Model Answers
+                </button>
+            </div>`;
+            
+            document.getElementById('feedbackDisplay').innerHTML = detailedFeedback;
+        }
+        
+        // Model answers data
+        const modelAnswers = {
+            sectionA: {
+                title: "Section A: Atomic Structure and the Periodic Table",
+                questions: [
+                    {
+                        question: "Question 1 (Multiple Choice)",
+                        parts: [
+                            { part: "a)", answer: "D) 23", explanation: "Mass number = protons + neutrons = 11 + 12 = 23", marks: 1 },
+                            { part: "b)", answer: "B) Chlorine", explanation: "Chlorine is in Group 7 (halogens)", marks: 1 },
+                            { part: "c)", answer: "B) 2", explanation: "The first electron shell can hold a maximum of 2 electrons", marks: 1 },
+                            { part: "d)", answer: "C) Electrons in the outer shell", explanation: "Elements in the same group have the same number of outer shell electrons", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 2 - Fluorine particles",
+                        parts: [
+                            { part: "Protons", answer: "9", explanation: "Number of protons = atomic number = 9", marks: 1 },
+                            { part: "Neutrons", answer: "10", explanation: "Number of neutrons = mass number - atomic number = 19 - 9 = 10", marks: 1 },
+                            { part: "Electrons", answer: "9", explanation: "In a neutral atom, electrons = protons = 9", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 3 - Isotopes",
+                        parts: [
+                            { part: "a) Define isotope", answer: "Atoms of the same element with the same number of protons but different numbers of neutrons", explanation: "Key points: same element (same protons), different neutrons", marks: 2 },
+                            { part: "b) Carbon isotopes", answer: "Both have 6 protons (same atomic number) but Carbon-12 has 6 neutrons while Carbon-14 has 8 neutrons (different mass numbers)", explanation: "Same atomic number = same protons, different mass numbers = different neutrons", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 4 - Magnesium",
+                        parts: [
+                            { part: "a) Electronic structure", answer: "2,8,2", explanation: "Magnesium has 12 electrons: 2 in first shell, 8 in second shell, 2 in third shell", marks: 2 },
+                            { part: "b) Why Group 2", answer: "It has 2 electrons in its outer shell", explanation: "Group number = number of outer shell electrons", marks: 1 },
+                            { part: "c) Two properties", answer: "Forms 2+ ions, conducts electricity, metallic bonding, malleable/ductile", explanation: "Any two valid metallic properties", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 5 - Noble gases unreactive",
+                        parts: [
+                            { part: "", answer: "Noble gases have full outer electron shells (8 electrons, except helium which has 2). This makes them stable and unreactive as they don't need to gain or lose electrons.", explanation: "Key points: full outer shell, stable electron arrangement, don't need to gain/lose electrons", marks: 4 }
+                        ]
+                    }
+                ]
+            },
+            sectionB: {
+                title: "Section B: Chemical Analysis",
+                questions: [
+                    {
+                        question: "Question 6 (Multiple Choice)",
+                        parts: [
+                            { part: "a)", answer: "B) Orange/yellow", explanation: "Sodium ions produce an orange/yellow flame color", marks: 1 },
+                            { part: "b)", answer: "C) Chloride ions", explanation: "Silver nitrate + chloride ions → white silver chloride precipitate", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 7 - Gas testing table",
+                        parts: [
+                            { part: "Chlorine test", answer: "Damp litmus paper", explanation: "Chlorine bleaches damp litmus paper", marks: 1 },
+                            { part: "Chlorine result", answer: "Bleaches/turns white", explanation: "The paper loses its color", marks: 1 },
+                            { part: "Oxygen test", answer: "Glowing splint", explanation: "Oxygen relights a glowing splint", marks: 1 },
+                            { part: "Oxygen result", answer: "Splint relights", explanation: "The glowing splint bursts into flame", marks: 1 },
+                            { part: "CO₂ test", answer: "Limewater", explanation: "Carbon dioxide turns limewater milky", marks: 1 },
+                            { part: "CO₂ result", answer: "Turns milky", explanation: "Forms calcium carbonate precipitate", marks: 1 },
+                            { part: "Hydrogen test", answer: "Lighted splint", explanation: "Hydrogen burns with a squeaky pop", marks: 1 },
+                            { part: "Hydrogen result", answer: "Squeaky pop", explanation: "Characteristic sound when hydrogen burns", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 8 - Purity",
+                        parts: [
+                            { part: "a) Define purity", answer: "A pure substance contains only one type of element or compound with no other substances mixed in", explanation: "Key point: single substance only", marks: 2 },
+                            { part: "b) Test for purity", answer: "Measure melting point or boiling point. Pure substances have sharp/fixed melting and boiling points", explanation: "Pure substances have specific melting/boiling points", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 9 - Separation techniques",
+                        parts: [
+                            { part: "a) Sand from salt water", answer: "Filtration", explanation: "Sand is insoluble and can be filtered out", marks: 1 },
+                            { part: "b) Salt from salt water", answer: "Evaporation or crystallisation", explanation: "Remove water to leave salt crystals", marks: 1 },
+                            { part: "c) Different colored dyes", answer: "Chromatography", explanation: "Separates based on different solubilities", marks: 1 },
+                            { part: "d) Iron and sulfur", answer: "Use a magnet to attract the iron filings. Iron is magnetic but sulfur is not, so they can be separated", explanation: "Physical separation using magnetic properties", marks: 3 }
+                        ]
+                    },
+                    {
+                        question: "Question 10 - Chromatography",
+                        parts: [
+                            { part: "a) Define chromatography", answer: "A separation technique where substances move at different rates through a stationary phase due to different solubilities", explanation: "Key points: separation technique, different rates, solubility differences", marks: 2 },
+                            { part: "b) Rf calculation", answer: "Rf = 6/8 = 0.75", explanation: "Rf = distance moved by substance ÷ distance moved by solvent front", marks: 1 }
+                        ]
+                    }
+                ]
+            },
+            sectionC: {
+                title: "Section C: Quantitative Chemistry",
+                questions: [
+                    {
+                        question: "Question 11 - Relative formula mass",
+                        parts: [
+                            { part: "a) H₂O", answer: "18", explanation: "Mr = (2 × 1) + (1 × 16) = 2 + 16 = 18", marks: 1 },
+                            { part: "b) CaCl₂", answer: "111", explanation: "Mr = (1 × 40) + (2 × 35.5) = 40 + 71 = 111", marks: 1 },
+                            { part: "c) Mg(OH)₂", answer: "58", explanation: "Mr = (1 × 24) + (2 × 16) + (2 × 1) = 24 + 32 + 2 = 58", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 12 - Conservation of mass",
+                        parts: [
+                            { part: "a) Law of conservation", answer: "Mass cannot be created or destroyed in a chemical reaction. The total mass of reactants equals the total mass of products", explanation: "Key principle: mass is conserved in reactions", marks: 2 },
+                            { part: "b) Mass of oxygen", answer: "1.6g", explanation: "Mass of oxygen = mass of product - mass of magnesium = 4.0g - 2.4g = 1.6g", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 13 - Percentage by mass",
+                        parts: [
+                            { part: "", answer: "12%", explanation: "Mr of CaCO₃ = 40 + 12 + (3×16) = 100. Percentage of C = (12/100) × 100 = 12%", marks: 4 }
+                        ]
+                    },
+                    {
+                        question: "Question 14 - Relative atomic mass",
+                        parts: [
+                            { part: "a) Define Ar", answer: "The average mass of atoms of an element compared to 1/12 of the mass of a carbon-12 atom, taking into account the relative abundance of isotopes", explanation: "Key points: average mass, compared to carbon-12, considers isotopes", marks: 2 },
+                            { part: "b) Percentage of sulfur", answer: "32.7%", explanation: "Percentage of S = (32/98) × 100 = 32.7%", marks: 2 }
+                        ]
+                    }
+                ]
+            },
+            sectionD: {
+                title: "Section D: Using Resources",
+                questions: [
+                    {
+                        question: "Question 15 (Multiple Choice)",
+                        parts: [
+                            { part: "", answer: "B) It conserves natural resources", explanation: "Recycling reduces the need to extract new raw materials", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 16 - Sustainable development",
+                        parts: [
+                            { part: "a) Define sustainable development", answer: "Meeting the needs of the present generation without compromising the ability of future generations to meet their own needs", explanation: "Key points: present needs, future generations, environmental protection", marks: 2 },
+                            { part: "b) Recycling aluminum reasons", answer: "Conserves finite bauxite ore resources; requires much less energy than extraction; reduces pollution from mining and smelting", explanation: "Any two valid environmental/resource benefits", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 17 - Plastics and environment",
+                        parts: [
+                            { part: "a) Natural resources for plastic", answer: "Crude oil and natural gas", explanation: "Plastics are made from fossil fuel feedstocks", marks: 2 },
+                            { part: "b) Environmental problem", answer: "Ocean pollution; harm to marine life; non-biodegradable waste; landfill problems", explanation: "Any one valid environmental impact", marks: 1 },
+                            { part: "c) Reduce plastic waste", answer: "Reduce single-use plastics; reuse containers; recycle plastics; use biodegradable alternatives", explanation: "Any two valid waste reduction strategies", marks: 2 }
+                        ]
+                    }
+                ]
+            },
+            sectionE: {
+                title: "Section E: Atmosphere",
+                questions: [
+                    {
+                        question: "Question 18 (Multiple Choice)",
+                        parts: [
+                            { part: "", answer: "B) 78%", explanation: "The atmosphere is approximately 78% nitrogen", marks: 1 }
+                        ]
+                    },
+                    {
+                        question: "Question 19 - Greenhouse gases",
+                        parts: [
+                            { part: "a) Two greenhouse gases", answer: "Carbon dioxide and methane", explanation: "Other examples: water vapour, nitrous oxide", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 20 - Metal vs non-metal ions",
+                        parts: [
+                            { part: "", answer: "Metal ions are positively charged (cations) because metals lose electrons. Non-metal ions are negatively charged (anions) because non-metals gain electrons", explanation: "Key difference: charge and electron transfer", marks: 2 }
+                        ]
+                    },
+                    {
+                        question: "Question 21 - Key definitions",
+                        parts: [
+                            { part: "a) Atom", answer: "The smallest particle of an element that retains the chemical properties of that element", explanation: "Basic building block of matter", marks: 2 },
+                            { part: "b) Element", answer: "A substance made of only one type of atom, with the same number of protons in each atom", explanation: "Pure substance, one type of atom only", marks: 2 },
+                            { part: "c) Compound", answer: "A substance made of two or more different elements chemically bonded together in fixed proportions", explanation: "Different elements, chemically bonded, fixed ratio", marks: 2 },
+                            { part: "d) Mixture", answer: "Two or more substances mixed together but not chemically bonded, retaining their individual properties", explanation: "Not chemically bonded, can be separated physically", marks: 2 }
+                        ]
+                    }
+                ]
+            }
+        };
+        
+        function showModelAnswers() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('modelAnswers').style.display = 'block';
+            
+            let content = '';
+            
+            Object.values(modelAnswers).forEach(section => {
+                content += `<div class="section-answers">`;
+                content += `<h3>${section.title}</h3>`;
+                
+                section.questions.forEach(q => {
+                    content += `<div class="model-answer">`;
+                    content += `<h4>${q.question}</h4>`;
+                    
+                    q.parts.forEach(part => {
+                        if (part.part) {
+                            content += `<strong>${part.part}</strong> `;
+                        }
+                        content += `<div class="answer-text">`;
+                        content += `<strong>Answer:</strong> ${part.answer}`;
+                        if (part.explanation) {
+                            content += `<br><em>Explanation:</em> ${part.explanation}`;
+                        }
+                        content += `</div>`;
+                        content += `<span class="marks">${part.marks} mark${part.marks > 1 ? 's' : ''}</span>`;
+                    });
+                    
+                    content += `</div>`;
+                });
+                
+                content += `</div>`;
+            });
+            
+            document.getElementById('modelAnswersContent').innerHTML = content;
+        }
+        
+        function hideModelAnswers() {
+            document.getElementById('modelAnswers').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        // Start timer when page loads
+        window.onload = function() {
+            startTimer();
+        };
+        
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', function (e) {
+            if (document.getElementById('results').style.display !== 'block') {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
